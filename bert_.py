@@ -7,18 +7,15 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 
-# Load Dataset
 file_path = r"C:\Users\Senthil Anand\Documents\sms spam\processed_sms_spam.csv"
 df = pd.read_csv(file_path, encoding="utf-8")
 df.columns = ["label", "text"]
 df.dropna(inplace=True)
 
-# Train-Test Split
 train_texts, test_texts, train_labels, test_labels = train_test_split(
     df["text"], df["label"], test_size=0.2, random_state=42, stratify=df["label"]
 )
 
-# Load DistilBERT Tokenizer
 tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
 
 # Tokenization Function
@@ -34,11 +31,9 @@ def tokenize_data(texts):
 train_encodings = tokenize_data(train_texts)
 test_encodings = tokenize_data(test_texts)
 
-# Convert labels to PyTorch tensors
 train_labels = torch.tensor(train_labels.tolist(), dtype=torch.long)
 test_labels = torch.tensor(test_labels.tolist(), dtype=torch.long)
 
-# PyTorch Dataset
 class SMSDataset(Dataset):
     def __init__(self, encodings, labels):
         self.encodings = encodings
@@ -52,16 +47,14 @@ class SMSDataset(Dataset):
         item["labels"] = self.labels[idx]
         return item
 
-# Create Datasets
 train_dataset = SMSDataset(train_encodings, train_labels)
 test_dataset = SMSDataset(test_encodings, test_labels)
 
-# Load DistilBERT Model
+# Load Model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
 model.to(device)
 
-# Training Arguments
 training_args = TrainingArguments(
     output_dir="./results",
     evaluation_strategy="epoch",
@@ -86,10 +79,8 @@ trainer = Trainer(
     eval_dataset=test_dataset
 )
 
-# Train Model
 trainer.train()
 
-# Evaluate Model
 predictions = trainer.predict(test_dataset)
 y_pred = torch.argmax(torch.tensor(predictions.predictions).cpu(), axis=1).numpy()
 y_true = test_labels.cpu().numpy()
@@ -97,17 +88,14 @@ y_true = test_labels.cpu().numpy()
 print("✅ Accuracy:", accuracy_score(y_true, y_pred))
 print("📊 Classification Report:\n", classification_report(y_true, y_pred))
 
-# Save Model
 model.save_pretrained("./sms_spam_model")
 tokenizer.save_pretrained("./sms_spam_model")
 
-# Function to Load Model
 def load_model():
     model = DistilBertForSequenceClassification.from_pretrained("./sms_spam_model")
     model.to(device)
     return model
 
-# Predict Function
 def predict_message(model, message):
     inputs = tokenizer(
         message,
@@ -127,7 +115,6 @@ def predict_message(model, message):
 
 saved_model_path = "./sms_spam_model"
 model.save(saved_model_path)
-# Load Model for Testing
 model = load_model()
 
 # Example Predictions
