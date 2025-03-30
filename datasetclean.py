@@ -41,18 +41,16 @@ def random_word_swap(text, n=2):
         words[idx1], words[idx2] = words[idx2], words[idx1]
     return " ".join(words)
 
-# Load dataset
+
 file_path = r"C:\Users\Senthil Anand\Documents\sms spam\combined12_sms_spam.csv"
 df = pd.read_csv(file_path, encoding="utf-8")
 
-# Filter only spam messages
+
 spam_messages = df[df["label"] == 1]["text"]
 
-# Generate augmented data
 augmented_texts = [synonym_replacement(text) for text in spam_messages] + \
                   [random_word_swap(text) for text in spam_messages]
 
-# Add new augmented spam messages to dataset
 augmented_df = pd.DataFrame({"label": 1, "text": augmented_texts})
 df = pd.concat([df, augmented_df], ignore_index=True)
 
@@ -70,7 +68,7 @@ def get_synonyms(word):
     for syn in wordnet.synsets(word):
         for lemma in syn.lemmas():
             synonyms.add(lemma.name())
-    synonyms.discard(word)  # Remove original word
+    synonyms.discard(word)  
     return list(synonyms)
 
 def synonym_replacement(sentence, n=1):
@@ -81,7 +79,7 @@ def synonym_replacement(sentence, n=1):
         word_choices = [word for word in words if get_synonyms(word)]
         
         if not word_choices:
-            continue  # No words have synonyms, skip augmentation
+            continue  
         
         word_to_replace = random.choice(word_choices)
         synonyms = get_synonyms(word_to_replace)
@@ -102,21 +100,16 @@ def random_word_swap(text, n=2):
         words[idx1], words[idx2] = words[idx2], words[idx1]
     return " ".join(words)
 
-# Load dataset
 file_path = r"C:\Users\Senthil Anand\Documents\sms spam\combined12_sms_spam.csv"
 df = pd.read_csv(file_path, encoding="utf-8")
 
-# Filter only spam messages
 spam_messages = df[df["label"] == 1]["text"]
 
-# Generate augmented data
 augmented_texts = [synonym_replacement(text) for text in spam_messages] + \
                   [random_word_swap(text) for text in spam_messages]
 
-# Add new augmented spam messages to dataset
 augmented_df = pd.DataFrame({"label": 1, "text": augmented_texts})
 df = pd.concat([df, augmented_df], ignore_index=True)
 
-# Save the new dataset
 df.to_csv(r"C:\Users\Senthil Anand\Documents\sms spam\augmented_sms_spam.csv", index=False)
 print("✅ Data augmentation complete. New dataset saved.")
