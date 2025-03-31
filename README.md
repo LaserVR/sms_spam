@@ -1,7 +1,9 @@
 With the increasing number of spam messages, users are frequently exposed to fraud, phishing attempts, and unwanted advertisements. Traditional spam filters often rely on keyword-based detection or server-side processing, which may compromise privacy. This project focuses on developing a mobile-friendly spam detection system using DistilBERT, a lightweight transformer model, to classify SMS messages as spam or not spam in real-time while maintaining data privacy. This model is optimized for real-time classification on mobile devices. The model ensures efficient, privacy-preserving, and accurate spam filtering without requiring cloud-based computation.
 
 The Datasets and the respective python files used to run the model are shared here.
+
 Model link-> https://drive.google.com/drive/folders/1C9-KHUQpu1rfr0bxlc-rog1rSxg3BKmA?usp=sharing
+
 ![image](https://github.com/user-attachments/assets/e6f570db-8de5-4d1a-af9c-3cd6fcc45225)
 ![image](https://github.com/user-attachments/assets/6d2ac2a0-12bc-4251-a759-b1a1ed1668a9)
 ![image](https://github.com/user-attachments/assets/ced8b891-361f-480c-bbe5-1481f8ec2281)
